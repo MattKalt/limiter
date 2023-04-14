@@ -177,7 +177,8 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 	w = x( 12, 2 ) / 4, 							//- - - - - - - - - - (last 4 bits: waveshaping)
 	d = 9 * t / T * 2 ** x( 8, 4 ), 			//- - - - hex 12: resonance decay
 	w += min(.5, beat( velTrack, speed, 1, d ) ),
-	a = 4e4 * t / T * x( 4, 4 ), 				//- - - - hex 13: note decay (higher = longer)
+	a = 5e4 * t / T * x( 4, 4 ), 				//- - - - hex 13: note decay (higher = longer)
+	a2 = -.6 + x( 4, 4 ) ** 2 / 200,
 	l = ((y%16) ** 2) / 2, 						//- - - - hex 14: lopass
 
 
@@ -198,7 +199,7 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 			)
 		, l
 		)
-	, 6e-3, 32, .4, 64, 1, 4, -.6
+	, .003, 32, .7, 96, 2, 4, a2
 	)
 ),
 
@@ -253,7 +254,7 @@ H=t=>(p=melody[(t>>13)%64],z=t*2**(p/12)*3.2,z=synth(z,[.5,1],13,0x0477f4005036)
 //48k:
 
 //8k:
-A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650b344)), //glockenspiel
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650b364)), //glockenspiel
 
 
 
