@@ -177,9 +177,9 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 	w = x( 12, 2 ) / 4, 							//- - - - - - - - - - (last 4 bits: waveshaping)
 	d = 9 * t / T * 2 ** x( 8, 4 ), 			//- - - - hex 12: resonance decay
 	w += min(.5, beat( velTrack, speed, 1, d ) ),
-	a = 5e4 * t / T * x( 4, 4 ), 				//- - - - hex 13: note decay (higher = longer)
+	a = 8e4 * t / T * ( x( 4, 4 ) + 1 ), 	//- - - - hex 13: note decay (higher = longer)
 	a2 = -.6 + x( 4, 4 ) ** 2 / 200,
-	l = ((y%16) ** 2) / 2, 						//- - - - hex 14: lopass
+	l = 2 + ((y%16) ** 2) / 2, 						//- - - - hex 14: lopass
 
 
 	n && ( melody = sinify( melody * 1/16 * 2 ** n ) ),
@@ -199,7 +199,7 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 			)
 		, l
 		)
-	, .003, 32, .7, 96, 2, 4, a2
+	, .003, 32, .7, 64, 2, 4, a2
 	)
 ),
 
@@ -254,8 +254,44 @@ H=t=>(p=melody[(t>>13)%64],z=t*2**(p/12)*3.2,z=synth(z,[.5,1],13,0x0477f4005036)
 //48k:
 
 //8k:
-A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650b364)), //glockenspiel
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650b384)), //glockenspiel
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x0d04db0081036b)), //high chimes
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x1337d00db00bbf)), //superhigh mouse harpsichord
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x1337f00dd00dbf)), //superhigh mouse harpsichord
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=min(m(z)/2,synth(z,[1,.05],9, 0xdadababa420859))), //bizarre
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1,1/5,1/10,1/10],10,0x1337f00dd00d3f)), //superhigh mouse harpsichord
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x494a0103400496)), //whistle
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x493a010340c3e6)), //whistle 2
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x492a01171073e6)), //piano
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x492a01371046f6)), //kazoo + keyboard
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x492a01379048f6)), //
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4b2a01379048f5)), //soft understated
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c2a01379048f6)), //soft understated 2
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c2f01379048fb)), //soft understated 3
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c2f063790766b)), //soft understated 4
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c3a0637907f9b)), //ooo
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c3a063790928d)), //squarey
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c300637907046)), //computer marimba
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c330637907876)), //accordion
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c340637907f86)), //
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4c370637307f66)), //kazoo + keys 2
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x04c3e063790876)), //chorusey high organ
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x65a8d48d146628)), //thin percussive steelpan
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x34f641b2a153c8)), //good organ
+//A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x7abe62ae515345)), //okish
+//A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x3cef2036db84b6)), //okish, percussive
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x55a9dce86022f8)), //anemic hi glockenspiel
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0xab39e8b17ea748)), //okish computer percuss
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x4200c6f33b5be0)), //undertones galore
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x645f138592b738)), //okish hi staccato
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x6c6e8570e8f750)), //screamy, kinda sucks
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0xd1d02dd8726730)), //idk but it's acoustic and cool
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x7abe62ae515345)), //generic bell
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[1],11, 0x0aee7f27d371d6)), //clean toy square
 
+
+
+//A(t)
 
 
 b=(t,X=1)=>(p=melody[((t>>15)%4)*16],z=(t/(4/X))*2**(p/12)*32,zs=synth(z/4,[1],15,0x020700203380f3),min(48,zs)*1+s2s(z/8)/3)*(32-t%65536/48E3),
