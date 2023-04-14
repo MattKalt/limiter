@@ -97,7 +97,7 @@ lp = lopass = (x, f) => ( // f ~= frequency, but not 1:1
 // Sounds kinda off, and hipass+lopas=/=original when you use ^, but + sounds harsher
 hp = hipass = (x, f) => m(x) ^ lp(x, f),
 
-lim = limiter = ( input, speed = .1, lookahead = 99, wet = .9, thresh = 9, bias = 0, iters = 8 ) => {
+lim = limiter = ( input, speed = .1, lookahead = 64, wet = .9, thresh = 9, bias = 0, iters = 8, saturate = 0 ) => {
 	l = x => fxi + 2 + ( T + x|0 ) % lookahead;
 	fx[ l(0) ] = m(input);
 	B = fx[ l(1) ]; //oldest in buffer
@@ -110,7 +110,7 @@ lim = limiter = ( input, speed = .1, lookahead = 99, wet = .9, thresh = 9, bias 
 	mi = fx[ fxi ] = min( d[0], fx[ fxi ] + speed, 255 );
 	mx = fx[ fxi+1 ] = max( d[1], fx[ fxi+1 ] - speed * ( bias + 1 ), mi + ( t ? thresh : 255 ) );
 	fxi += 2 + lookahead;
-	return ( B - mi ) * 255/(mx-mi) * wet + B * (1-wet)
+	return ds( ( B - mi ) * 255/(mx-mi), saturate ) * wet + B * (1-wet)
 },
 
 //downsample
@@ -174,9 +174,9 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 	z = x( 20, 4 ) + 1, 							//- - - - hex 9 : wavetable size
 	c = x( 16, 4 ),								//- - - - hex 10: chorus
 	n = x( 14, 2 ),								//- - - - hex 11: sine octave ( /4, no sine if 0)
-	w = x( 12, 2 ) / 6, 							//- - - - - - - - - - (last 4 bits: waveshaping)
+	w = x( 12, 2 ) / 4, 							//- - - - - - - - - - (last 4 bits: waveshaping)
 	d = 9 * t / T * 2 ** x( 8, 4 ), 			//- - - - hex 12: resonance decay
-	w -= min(.6, beat( velTrack, speed, 1, d ) ),
+	w += min(.5, beat( velTrack, speed, 1, d ) ),
 	a = 4e4 * t / T * x( 4, 4 ), 				//- - - - hex 13: note decay (higher = longer)
 	l = ((y%16) ** 2) / 2, 						//- - - - hex 14: lopass
 
@@ -198,7 +198,7 @@ sy = synth = (melody, velTrack, speed, y, ...z)=>
 			)
 		, l
 		)
-	, 6e-3, 99, .5, 64, .7
+	, 6e-3, 32, .4, 64, 1, 4, -.6
 	)
 ),
 
@@ -253,7 +253,7 @@ H=t=>(p=melody[(t>>13)%64],z=t*2**(p/12)*3.2,z=synth(z,[.5,1],13,0x0477f4005036)
 //48k:
 
 //8k:
-A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650a544)), //glockenspiel
+A=t=>(p=melody[(t>>11)%64],z=t*2**(p/12)*32,z=synth(z,[.5,1],11,0x5b4e051650b344)), //glockenspiel
 
 
 
@@ -269,7 +269,7 @@ o = (mel-((t>>17)?bass:0))/2 + 96,
 //o = lim( o, 5e-3, 9 )
 
 //o
-ds(lim( o, .001, 99, .9), -.6)
+ds( lim( o, .001, 64, .9, 1, .125, 16 ), -.6 )
 //mel
 //A(t)
 
